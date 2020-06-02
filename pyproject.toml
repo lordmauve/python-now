@@ -1,13 +1,16 @@
 [tool.poetry]
-name = "brython"
+name = "startpython"
 version = "0.1.0"
 description = ""
-authors = ["vanessa <32312712+vlbee@users.noreply.github.com>"]
+authors = [
+    "vanessa <32312712+vlbee@users.noreply.github.com>",
+    "Daniel Pope <mauve@mauveweb.co.uk>",
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
 livereload = "^2.6.1"
-brython =  "^3.8.7"
+brython = "^3.8.7"
 
 [tool.poetry.dev-dependencies]
 

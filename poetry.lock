@@ -1,5 +1,13 @@
 [[package]]
 category = "main"
+description = "Brython is an implementation of Python 3 running in the browser"
+name = "brython"
+optional = false
+python-versions = "*"
+version = "3.8.7"
+
+[[package]]
+category = "main"
 description = "Python LiveReload is an awesome tool for web developers"
 name = "livereload"
 optional = false
@@ -27,10 +35,14 @@ python-versions = ">= 3.5"
 version = "6.0.3"
 
 [metadata]
-content-hash = "39c0ee00394eb4037e8681c3b18949dea8a5410dc98c2abcd5735d57c3cf6665"
+content-hash = "abd23035e59ff90a9dbafc9d56f4d405449f7134f13982e49d662306b7ea6f05"
 python-versions = "^3.7"
 
 [metadata.files]
+brython = [
+    {file = "brython-3.8.7-py3.8.egg", hash = "sha256:5847892487e554f9fa43a084587dc9f2476f853419b9d4784612cb73095d44a8"},
+    {file = "brython-3.8.7.tar.gz", hash = "sha256:18573061284ee3579d1dda91cddcdb5be8e9b142d669ccab7725910ad04ecd92"},
+]
 livereload = [
     {file = "livereload-2.6.1-py2.py3-none-any.whl", hash = "sha256:78d55f2c268a8823ba499305dcac64e28ddeb9a92571e12d543cd304faf5817b"},
     {file = "livereload-2.6.1.tar.gz", hash = "sha256:89254f78d7529d7ea0a3417d224c34287ebfe266b05e67e51facaf82c27f0f66"},
