@@ -61,6 +61,11 @@ body {
   overflow-y: auto;
 }
 
+/* Style the "fork me on GitHub ribbon */
+.github-fork-ribbon:before {
+  background-color: #444;
+}
+
 /* Throbber taken from https://projects.lukehaas.me/css-loaders/ */
 .loader,
 .loader:before,
