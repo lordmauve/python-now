@@ -9,13 +9,20 @@ Example screenshot:
 ![Example Screenshot](https://raw.githubusercontent.com/lordmauve/python-now/master/docs/running-python.png)
 
 
-## Current state:
+## Current status
 
-This project is currently very incomplete. It can
+This project is fully functional, but lacks content.
 
-* Edit code using CodeMirror
-* Execute that code in a web worker using Brython
-* Display output from that program
+It can
+
+* Render tutorial pages loaded as Markdown
+* Edit and run code, and display output
+* Navigate between pages
+
+If you'd like to contribute, you can write content
+([it's just Markdown](https://github.com/lordmauve/python-now/tree/master/lessons)),
+or check out the [issues](https://github.com/lordmauve/python-now/issues).
+
 
 
 ## Running
