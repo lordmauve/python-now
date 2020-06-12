@@ -1,10 +1,12 @@
 # Python Now
 
-![Example Screenshot](https://raw.githubusercontent.com/lordmauve/python-now/master/docs/running-python.png)
-
 An interative Python tutorial in the browser, as a static site.
 
-The code examples in this tutorial run with Brython.
+[Jump straight in!](https://lordmauve.github.io/python-now/).
+
+Example screenshot:
+
+![Example Screenshot](https://raw.githubusercontent.com/lordmauve/python-now/master/docs/running-python.png)
 
 
 ## Current state:
@@ -25,3 +27,12 @@ $ python3 -m http.server
 ```
 
 To run the code in an editor, press `Ctrl-Enter`.
+
+
+## Adding content
+
+* Content is under `lessons/` in Markdown format.
+* The navigation panel is in `index.html` in HTML format.
+
+While developing a lesson, you can press `Ctrl-R` to reload the current lesson
+more quickly than reloading the page.

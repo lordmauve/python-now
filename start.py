@@ -101,9 +101,10 @@ def on_worker_message(msg):
     editor.on_output(command, params)
 
 
-def load_lesson(name):
+def load_lesson(name, loader=True):
     """Initiate an AJAX request to load lesson source."""
-    document['lesson'].html = '<div class="loader"></div>'
+    if loader:
+        document['lesson'].html = '<div class="loader"></div>'
     url = f'lessons/{name}.md'
     ajax.get(url, oncomplete=render_lesson)
 
@@ -153,12 +154,26 @@ There was an error loading the lesson {url}.
             Editor(el)
 
 
-def on_hash_change(event):
+def on_hash_change(event=None):
     """Handle the user clicking on an anchor to a different lesson."""
-    load_lesson(window.location.hash.strip('#'))
+    fragment = window.location.hash.strip('#')
+    if fragment:
+        load_lesson(fragment)
 
 
+def on_key(event):
+    """Handle reloading the current lesson from the server."""
+    if event.ctrlKey and event.keyCode == 82:
+        fragment = window.location.hash.strip('#')
+        if fragment:
+            load_lesson(fragment, loader=False)
+            event.preventDefault()
+
+
+window.bind('keydown', on_key)
 window.bind('hashchange', on_hash_change)
+
+
 
 if window.location.hash:
     on_hash_change(None)
