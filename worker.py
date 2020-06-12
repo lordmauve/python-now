@@ -34,8 +34,12 @@ def on_message(event):
     with contextlib.redirect_stdout(buff), contextlib.redirect_stderr(buff):
         self.send([id, 'ready', 0])
         try:
-            code = compile(source, '<stdin>', mode)
-            result = exec(code, {})
+            code = compile(source, filename='python-now', mode=mode)
+            ns = {
+                '__name__': '__main__',
+                '__filename__': '<python-now>'
+            }
+            result = exec(code, ns)
         except BaseException:
             self.send([id, 'err', traceback.format_exc()])
         else:

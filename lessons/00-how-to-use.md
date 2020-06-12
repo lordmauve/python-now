@@ -10,7 +10,8 @@ run right here in your browser.
 ## Getting Started
 
 When you see prompts like `>>>`, this indicates code fragments that you can
-edit and run. Python prints the result of evaluating the code.
+edit. You can run it either by pressing the `Enter` key, or by clicking the
+"Run" button. Python prints the result of evaluating the code.
 
 ```repl
 >>> "hello world!"
@@ -22,6 +23,8 @@ screen) to see the output.
 
 Here's an example of what this looks like; a program that prints the first
 10 numbers from the [Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_number).
+To run this example, either click the "Run" button, or hold `Ctrl` and press
+`Enter`.
 
 ```python
 a = b = 1
