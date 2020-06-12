@@ -6,24 +6,31 @@ import contextlib
 
 
 class OutputWriter:
-    def __init__(self, window):
+    def __init__(self, id, window):
+        self.id = id
         self.window = window
 
     def write(self, text):
-    	self.window.send(['output', text])
+        """Write output to the screen."""
+        self.window.send([self.id, 'output', text])
 
 
-@bind(self, "runcode")
-def on_run_code(evt):
+@bind(self, "message")
+def on_message(event):
     """Handle a message sent by the main script.
+
     evt.data is the message body.
     """
-    source = evt.data
-    buff = OutputWriter(self)
+    msg = event.data
+    id = msg['id']
+    code = msg['exec']
+    buff = OutputWriter(id, self)
     with contextlib.redirect_stdout(buff), contextlib.redirect_stderr(buff):
-	try:
-	    exec(code, {})
-	except:
-	    import traceback
-	    traceback.print_exc()
-    self.send(workerResult)
+        try:
+            result = exec(code, {})
+        except BaseException:
+            import traceback
+            traceback.print_exc()
+            self.send([id, 'err', traceback.format_exc()])
+        else:
+            self.send([id, 'result', result])
