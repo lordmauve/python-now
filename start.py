@@ -13,13 +13,20 @@ class Editor:
     #: A list of the Editor instances
     components = []
 
-    def on_key_down(self, event):
-        """Handle a key press in the editor component."""
-        if event.keyCode == 13 and event.ctrlKey:
-            event.preventDefault()
+    def on_repl_enter(self, event):
+        """Handle the user pressing Enter in REPL mode.
+        
+        We parse the source in order to detect if the statement is complete,
+        and only execute it if so.
+        """
+        try:
+            compile(self.codemirror.getValue(), '', 'eval')
+        except SyntaxError:
+            return window.CodeMirror.Pass
+        else:
             self.run()
 
-    def __init__(self, textarea):
+    def __init__(self, textarea, repl=False):
         """Construct an editor component and insert it into the document."""
         self.id = len(self.components)
 
@@ -29,19 +36,29 @@ class Editor:
         self.outbox = html.DIV()
         textarea.insertAdjacentElement('afterend', self.outbox)
 
-        self.codemirror = window.CodeMirror.fromTextArea(textarea, {
+        options = {
             "theme": "darcula",
-            "lineNumbers": True,
+            "lineNumbers": not repl,
             "viewportMargin": window.Infinity,
             "extraKeys": {
                 "Ctrl-Enter": self.run,
             }
-        })
+        }
+        if repl:
+            options['gutters'] = ['prompt-gutter']
+            options['extraKeys']['Enter'] = self.on_repl_enter
+        self.codemirror = window.CodeMirror.fromTextArea(textarea, options)
+        if repl:
+            prompt = html.SPAN('>>>', **{'class': 'prompt'})
+            self.codemirror.setGutterMarker(0, 'prompt-gutter', prompt)
+        self.repl = repl
+
         self.output = html.PRE()
         self.outbox <= self.output
         self.components.append(self)
     
     def on_output(self, command, params):
+        """Show output being sent back from the executor web worker."""
         if command == 'output':
             node = document.createTextNode(params)
             self.output <= node
@@ -53,7 +70,7 @@ class Editor:
         elif command == 'result':
             pass  # discard for now
         elif command == 'ready':
-            self.outbox.class_name = ''
+            self.outbox.class_name = 'outbox'
             
     def run(self, _event=None):
         """Run the code currently in the editor."""
@@ -62,7 +79,8 @@ class Editor:
         self.output.text = ''
         executor.send({
             'id': self.id,
-            'exec': source
+            'source': source,
+            'mode': 'eval' if self.repl else 'exec'
         })
 
 
@@ -84,6 +102,7 @@ def load_lesson(name):
 
 
 FENCE_RE = re.compile(r"^```(\w+)\n(.*?)```", re.DOTALL | re.MULTILINE)
+REPL_RE = re.compile(r'^(>>>|\.\.\.) ', re.MULTILINE)
 
 
 def render_lesson(req):
@@ -119,8 +138,13 @@ There was an error loading the lesson {url}.
 
     for id, mode, content in interactions:
         el = document[id]
-        el.text = content.rstrip()
-        Editor(el)
+        if mode == 'repl':
+            el.text = REPL_RE.sub('', content.rstrip())
+            Editor(el, repl=True)
+        else:
+            el.text = content.rstrip()
+            Editor(el)
+
 
 load_lesson("01-strings")
 

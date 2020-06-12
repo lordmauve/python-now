@@ -27,14 +27,17 @@ def on_message(event):
         id = msg['id']
     except KeyError:
         return
-    code = msg['exec']
+    source = msg['source']
+    mode = msg['mode']
     buff = OutputWriter(id, self)
 
     with contextlib.redirect_stdout(buff), contextlib.redirect_stderr(buff):
         self.send([id, 'ready', 0])
         try:
+            code = compile(source, '<stdin>', mode)
             result = exec(code, {})
         except BaseException:
             self.send([id, 'err', traceback.format_exc()])
         else:
-            self.send([id, 'result', result])
+            if result is not None:
+                print(repr(result))
