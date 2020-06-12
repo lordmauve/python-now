@@ -42,6 +42,7 @@ class Editor:
             "viewportMargin": window.Infinity,
             "extraKeys": {
                 "Ctrl-Enter": self.run,
+                "Esc": self.clear,
             }
         }
         if repl:
@@ -56,6 +57,11 @@ class Editor:
         self.output = html.PRE()
         self.outbox <= self.output
         self.components.append(self)
+
+    def clear(self, _event=None):
+        """Clear the output window."""
+        self.output.text = ''
+        self.output.class_name = ''
     
     def on_output(self, command, params):
         """Show output being sent back from the executor web worker."""
@@ -97,6 +103,7 @@ def on_worker_message(msg):
 
 def load_lesson(name):
     """Initiate an AJAX request to load lesson source."""
+    document['lesson'].html = '<div class="loader"></div>'
     url = f'lessons/{name}.md'
     ajax.get(url, oncomplete=render_lesson)
 
@@ -146,8 +153,15 @@ There was an error loading the lesson {url}.
             Editor(el)
 
 
-load_lesson("01-strings")
+def on_hash_change(event):
+    """Handle the user clicking on an anchor to a different lesson."""
+    load_lesson(window.location.hash.strip('#'))
 
+
+window.bind('hashchange', on_hash_change)
+
+if window.location.hash:
+    on_hash_change(None)
 
 # Make sure the executor is warm
 executor.send({})

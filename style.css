@@ -16,6 +16,31 @@ body {
   color: #222;
 }
 
+article {
+    max-width: 800px;
+    position: relative;
+}
+
+@media screen and (min-width: 1100px) {
+  article {
+    position: absolute;
+    left: 300px;
+    top: 80px;
+  }
+
+  nav {
+    position: absolute;
+    top: 80px;
+    left: 10px;
+    width: 280px;
+  }
+
+  article h2:first-child,
+  nav h2:first-child {
+    margin-top: 0;
+  }
+}
+
 .output {
   color: silver;
   background-color: black;
@@ -31,6 +56,7 @@ body {
 .CodeMirror {
   font-size: 10pt;
   height: auto;
+  padding: 5px;
 }
 
 /* CSS class for the prompt gutter in REPL mode */
