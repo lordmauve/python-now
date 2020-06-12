@@ -25,7 +25,9 @@ def on_message(event):
     id = msg['id']
     code = msg['exec']
     buff = OutputWriter(id, self)
+
     with contextlib.redirect_stdout(buff), contextlib.redirect_stderr(buff):
+        self.send([id, 'ready', 0])
         try:
             result = exec(code, {})
         except BaseException:

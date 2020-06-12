@@ -1,4 +1,4 @@
-from browser import document, html, bind
+from browser import document, html, bind, window
 from browser.worker import Worker
 
 
@@ -14,28 +14,42 @@ class Editor:
             event.preventDefault()
             self.run()
 
-    def __init__(self, placeholderText="# Write some Python code here"):
+    def __init__(self, placeholder="# Write some Python code here"):
         """Construct an editor component and insert it into the document."""
         self.id = len(self.components)
-        self.text = html.TEXTAREA(Class="textarea")
-        self.text.value = placeholderText
-        self.output = html.PRE()
-        document <= self.text
-        document <= self.output
-        self.text.bind("keydown", self.on_key_down)
-        self.components.append(self)
+        self.codemirror = window.CodeMirror(document.body, {
+            "value": placeholder,
+            "theme": "darcula",
+            "lineNumbers": True,
+            "viewportMargin": window.Infinity,
+            "extraKeys": {
+                "Ctrl-Enter": self.run,
+            }
+        })
 
+        self.outbox = html.DIV()
+        document <= self.outbox
+        self.output = html.PRE()
+        self.outbox <= self.output
+        self.components.append(self)
+    
     def on_output(self, command, params):
         if command == 'output':
             node = document.createTextNode(params)
             self.output <= node
+            self.output.class_name = 'output'
         elif command == 'err':
-            self.output.text = params
+            err = html.SPAN(params)
+            err.class_name = 'err'
+            self.output <= err
         elif command == 'result':
             pass  # discard for now
-
-    def run(self):
-        source = self.text.value
+        elif command == 'ready':
+            self.outbox.class_name = ''
+            
+    def run(self, _event=None):
+        self.outbox.class_name = 'loader'
+        source = self.codemirror.getValue()
         self.output.text = ''
         executor.send({
             'id': self.id,
