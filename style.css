@@ -1,18 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+
+h1, h2 {
+  font-weight: normal;
+  font-family: 'Montserrat', sans-serif;
+  color: black;
+}
+
+h2 {
+  margin-top: 2em;
+}
+
+body {
+  font-family: sans-serif;
+  line-height: 1.3em;
+  color: #222;
+}
+
 .output {
   color: silver;
   background-color: black;
 
   padding: 0.5em 0.8em 1em;
+  margin: 0;
 }
 
 .err {
-  color: #0a0;
+  color: #a00;
 }
 
 .CodeMirror {
   font-size: 10pt;
   height: auto;
 }
+
+.run {
+  position: absolute;
+  right: 15px;
+  z-index: 10000;
+  margin-top: 8px;
+  color: white;
+  background-color: #266392;
+  border-radius: 4px;
+  border: none;
+  padding: 0.3em 0.6em;
+}
+
 
 /* Throbber taken from https://projects.lukehaas.me/css-loaders/ */
 .loader,
@@ -59,8 +91,8 @@
   left: 4.9em;
   -webkit-transform-origin: 0.1em 5.1em;
   transform-origin: 0.1em 5.1em;
-  -webkit-animation: load2 2s infinite ease;
-  animation: load2 2s infinite ease;
+  -webkit-animation: load2 1s infinite ease;
+  animation: load2 1s infinite ease;
 }
 @-webkit-keyframes load2 {
   0% {

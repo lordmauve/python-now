@@ -3,6 +3,7 @@
 # In web workers, "window" is replaced by "self".
 from browser import bind, self
 import contextlib
+import traceback
 
 
 class OutputWriter:
@@ -22,7 +23,10 @@ def on_message(event):
     evt.data is the message body.
     """
     msg = event.data
-    id = msg['id']
+    try:
+        id = msg['id']
+    except KeyError:
+        return
     code = msg['exec']
     buff = OutputWriter(id, self)
 
@@ -31,8 +35,6 @@ def on_message(event):
         try:
             result = exec(code, {})
         except BaseException:
-            import traceback
-            traceback.print_exc()
             self.send([id, 'err', traceback.format_exc()])
         else:
             self.send([id, 'result', result])

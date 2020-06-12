@@ -1,4 +1,9 @@
-from browser import document, html, bind, window
+"""UI system for Python Now.
+
+This is a Brython front-end which loads and displays lessons.
+"""
+import re
+from browser import document, html, bind, window, ajax, markdown
 from browser.worker import Worker
 
 
@@ -14,11 +19,17 @@ class Editor:
             event.preventDefault()
             self.run()
 
-    def __init__(self, placeholder="# Write some Python code here"):
+    def __init__(self, textarea):
         """Construct an editor component and insert it into the document."""
         self.id = len(self.components)
-        self.codemirror = window.CodeMirror(document.body, {
-            "value": placeholder,
+
+        self.run_but = html.BUTTON('Run ▶', **{'class': 'run'})
+        textarea.insertAdjacentElement('beforebegin', self.run_but)
+        self.run_but.bind('click', self.run)
+        self.outbox = html.DIV()
+        textarea.insertAdjacentElement('afterend', self.outbox)
+
+        self.codemirror = window.CodeMirror.fromTextArea(textarea, {
             "theme": "darcula",
             "lineNumbers": True,
             "viewportMargin": window.Infinity,
@@ -26,9 +37,6 @@ class Editor:
                 "Ctrl-Enter": self.run,
             }
         })
-
-        self.outbox = html.DIV()
-        document <= self.outbox
         self.output = html.PRE()
         self.outbox <= self.output
         self.components.append(self)
@@ -48,6 +56,7 @@ class Editor:
             self.outbox.class_name = ''
             
     def run(self, _event=None):
+        """Run the code currently in the editor."""
         self.outbox.class_name = 'loader'
         source = self.codemirror.getValue()
         self.output.text = ''
@@ -62,18 +71,59 @@ executor = Worker('run_code')
 
 @bind(executor, 'message')
 def on_worker_message(msg):
+    """Route a message from the executor to the editor that submitted it."""
     id, command, params = msg.data
     editor = Editor.components[id]
     editor.on_output(command, params)
 
 
-Editor("""
-from itertools import islice
-def fib():
-    a, b = 1, 1
-    while True:
-        yield a
-        a, b = b, a + b
+def load_lesson(name):
+    """Initiate an AJAX request to load lesson source."""
+    url = f'lessons/{name}.md'
+    ajax.get(url, oncomplete=render_lesson)
 
-print(*islice(fib(), 10))
-""")
+
+FENCE_RE = re.compile(r"^```(\w+)\n(.*?)```", re.DOTALL | re.MULTILINE)
+
+
+def render_lesson(req):
+    """Display the given markdown document as a lesson."""
+    url = req.responseURL
+    if req.status == 200:
+        source = req.text
+    else:
+        source = f"""# Error
+        
+There was an error loading the lesson {url}.
+
+    HTTP Error {req.status}
+"""
+
+    interactions = []
+
+    def match_code(mo):
+        obj_id = f'{url}-{len(interactions)}'
+        mode, content = mo.groups()
+        interactions.append((obj_id, mode, content))
+        return f'<textarea id="{obj_id}"></textarea>'
+
+    source = FENCE_RE.sub(
+        match_code,
+        source,
+    )
+    mk, scripts = markdown.mark(source)
+
+    container = document['lesson']
+    container.class_name = ''
+    container.html = mk
+
+    for id, mode, content in interactions:
+        el = document[id]
+        el.text = content.rstrip()
+        Editor(el)
+
+load_lesson("01-strings")
+
+
+# Make sure the executor is warm
+executor.send({})
