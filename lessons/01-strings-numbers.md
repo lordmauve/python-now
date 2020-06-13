@@ -110,17 +110,16 @@ the numbers, it just adds them.
 ```
 
 ```exercises
-
 def test_subtract():
     """Can you subtract the numbers instead?"""
     assert '-' in source and result == 3
 
 def test_multiply():
     """Can you multiply the numbers? The multiply operator in Python, like most
-      programming languages is `*` (not `×` - you probably don't have an `×` key
-      on your keyboard!).
-      """
-      assert '*' in source and result == 10
+    programming languages is `*` (not `×` - you probably don't have an `×` key
+    on your keyboard!).
+    """
+    assert '*' in source and result == 10
 ```
 
 
@@ -143,4 +142,42 @@ def test_floordiv():
 def test_mod():
     """Calculate the answer `1` as the remainder for 10 ÷ 3."""
     assert result == 1
+
+def test_divmod():
+    """Try instead the `divmod(x, y)` function gives you both `x // y` and
+    `x % y` at the same time.""" 
+    assert result == (3, 1) and 'divmod' in source
+```
+
+## Parentheses
+
+Python follows normal mathematical order when working out how to do a
+calculation. The order is
+
+1. Parentheses aka brackets - `(` and `)`
+2. Exponents aka powers aka orders - the `**` operator
+3. Multiplication and division (left to right) - `*`, `/`, `//` and `%`
+4. Addition and subtraction (left to right) - `+` and `-`
+
+If you're unsure you can just add extra parentheses to make sure the calculation
+is done in the order you expect.
+
+```repl
+>>> 5 * 3 - 2 - 1
+```
+
+```exercises
+def check_nums():
+    import re
+    assert [int(n) for n in re.findall(r'\d+', source)] == [5, 3, 2, 1]
+
+def test_four():
+    """Insert parentheses so that the answer is 4."""
+    check_nums()
+    assert result == 4
+
+def test_14():
+    """Insert parentheses so that the answer is 14."""
+    check_nums()
+    assert result == 14
 ```

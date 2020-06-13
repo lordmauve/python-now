@@ -36,20 +36,23 @@ for _ in range(10):
 Finally, sometimes there are exercises associated with an editor.
 
 ```python
-def f(x):
+def square(x):
+    return x
+
+def sqrt(x):
     return x
 ```
 
 ```exercises
 
 def test_double():
-    """Make `f(x)` return the **square** of *x*."""
-    assert f(10) == 100
-    assert f(-1) == 1
+    """Make `square(x)` return the **square** of *x*."""
+    assert square(10) == 100
+    assert square(-1) == 1
 
 def test_square_root():
-    """Make `f(x)` return the **square root** of *x*."""
-    assert f(25) == 5
-    assert f(36) == 6
-    assert abs(f(2) - 2 ** 0.5) < 1e-9
+    """Make `sqrt(x)` return the **square root** of *x*."""
+    assert sqrt(25) == 5
+    assert sqrt(36) == 6
+    assert abs(sqrt(2) - 2 ** 0.5) < 1e-9
 ```
