@@ -10,6 +10,12 @@ Try changing this example so that it reads "hello world!".
 >>> 'hello!'
 ```
 
+```exercises
+def test_helloworld():
+    """Input the string 'hello world!'"""
+    assert result == 'hello world!'
+```
+
 And make this one into Hello... and then your own name.
 
 ```repl
@@ -55,9 +61,16 @@ We can **concatenate** two strings by using a `+` sign.
 >>> "joi" + "ned"
 ```
 
-You can also add three strings. Can you make this say `'joined up'` by adding
-an extra string? You need one of the strings to include a space inside the
-quotes, or else it will say `'joinedup'`.
+```exercise
+def test_joined_up():
+    """
+    You can also add three strings. Can you make this say `'joined up'` by
+    adding an extra string? You need one of the strings to include a space
+    inside the quotes, or else it will say `'joinedup'`.
+    """
+    assert source.count('+') == 2
+    assert result == 'joined up'
+```
 
 
 ## Calling methods
@@ -96,10 +109,19 @@ the numbers, it just adds them.
 >>> 5 + 2
 ```
 
-* Can you subtract the numbers instead?
-* Can you multiply the numbers? The multiply operator in Python, like most
-  programming languages is `*` (not `×` - you probably don't have an `×` key on
-  your keyboard!).
+```exercises
+
+def test_subtract():
+    """Can you subtract the numbers instead?"""
+    assert '-' in source and result == 3
+
+def test_multiply():
+    """Can you multiply the numbers? The multiply operator in Python, like most
+      programming languages is `*` (not `×` - you probably don't have an `×` key
+      on your keyboard!).
+      """
+      assert '*' in source and result == 10
+```
 
 
 ## Division and remainder

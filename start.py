@@ -15,7 +15,7 @@ class Editor:
 
     def on_repl_enter(self, event):
         """Handle the user pressing Enter in REPL mode.
-        
+
         We parse the source in order to detect if the statement is complete,
         and only execute it if so.
         """
@@ -108,7 +108,8 @@ class Editor:
         triple_quoted = TRIPLE_QUOTES_RE.findall(source)
 
         for docstring in triple_quoted:
-            mk, scripts = markdown.mark(docstring.strip())
+            lines = docstring.strip().splitlines()
+            mk, scripts = markdown.mark('\n'.join(ln.strip() for ln in lines))
 
             img = '<img alt="Unsolved" src="static/svg/unsolved.svg">'
             item = html.LI(**{'class': 'exercise'})
@@ -159,8 +160,12 @@ There was an error loading the lesson {url}.
     def match_code(mo):
         obj_id = f'{url}-{len(interactions)}'
         mode, content = mo.groups()
-        if mode not in ('repl', 'python', 'exercises'):
-            return
+        if mode not in ('repl', 'python', 'exercises', 'exercise'):
+            return mo.group(0)
+
+        if mode == 'exercise':
+            mode += 's'
+
         interactions.append((obj_id, mode, content))
         if mode in ('repl', 'python'):
             return f'<textarea id="{obj_id}"></textarea>'
