@@ -32,6 +32,7 @@ code {
 .exercises {
   margin-left: 0;
   padding-left: 0;
+  margin-bottom: 1.5em;
 }
 
 .exercise img:first-child {
@@ -43,8 +44,7 @@ code {
 .exercise {
   list-style: none;
   margin: 1.5em 0 1em 0;
-  padding-left: 35px;
-  
+  padding-left: 15px;
 }
 
 
