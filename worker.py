@@ -10,10 +10,16 @@ class OutputWriter:
     def __init__(self, id, window):
         self.id = id
         self.window = window
+        self.buf = []
 
     def write(self, text):
         """Write output to the screen."""
+        self.buf.append(text)
         self.window.send([self.id, 'output', text])
+
+    def getvalue(self):
+        """Get everything that was printed."""
+        return ''.join(self.buf)
 
 
 @bind(self, "message")
@@ -51,10 +57,13 @@ def on_message(event):
             if mode == 'exec':
                 test_ns = namespace.copy()
             else:
-                test_ns = {
-                    'source': source,
-                    'result': result,
-                }
+                test_ns = {}
+
+            test_ns.update(
+                source=source,
+                result=result,
+                output=buff.getvalue(),
+            )
                 
             exec(msg['exercises'], test_ns)
 

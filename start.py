@@ -26,8 +26,20 @@ class Editor:
         else:
             self.run()
 
-    def __init__(self, textarea, repl=False):
+    def __init__(self, textarea, content, repl=False):
         """Construct an editor component and insert it into the document."""
+        if not repl:
+            textarea.text = content
+        else:
+            lines = []
+            prompts = []
+            for ln in content.splitlines():
+                mo = REPL_RE.match(ln)
+                prompt, src = mo.groups()
+                prompts.append(prompt.rstrip())
+                lines.append(src)
+            textarea.text = '\n'.join(lines)
+
         self.id = len(self.components)
 
         self.run_but = html.BUTTON('Run ▶', **{'class': 'run'})
@@ -50,8 +62,9 @@ class Editor:
             options['extraKeys']['Enter'] = self.on_repl_enter
         self.codemirror = window.CodeMirror.fromTextArea(textarea, options)
         if repl:
-            prompt = html.SPAN('>>>', **{'class': 'prompt'})
-            self.codemirror.setGutterMarker(0, 'prompt-gutter', prompt)
+            for lineno, prompt in enumerate(prompts):
+                prompt = html.SPAN(prompt, **{'class': 'prompt'})
+                self.codemirror.setGutterMarker(lineno, 'prompt-gutter', prompt)
         self.repl = repl
 
         self.output = html.PRE()
@@ -139,7 +152,7 @@ def load_lesson(name, loader=True):
 
 TRIPLE_QUOTES_RE = re.compile(r'"""(.*?)"""', flags=re.DOTALL)
 FENCE_RE = re.compile(r"^```(\w+)\n(.*?)```", re.DOTALL | re.MULTILINE)
-REPL_RE = re.compile(r'^(>>>|\.\.\.) ', re.MULTILINE)
+REPL_RE = re.compile(r'^(>>> |\.\.\. )?(.*)', re.MULTILINE)
 
 
 def render_lesson(req):
@@ -166,6 +179,7 @@ There was an error loading the lesson {url}.
         if mode == 'exercise':
             mode += 's'
 
+        content = content.rstrip()
         interactions.append((obj_id, mode, content))
         if mode in ('repl', 'python'):
             return f'<textarea id="{obj_id}"></textarea>'
@@ -186,11 +200,10 @@ There was an error loading the lesson {url}.
     for id, mode, content in interactions:
         el = document[id]
         if mode == 'repl':
-            el.text = REPL_RE.sub('', content.rstrip())
-            last_ed = Editor(el, repl=True)
+            #el.text = REPL_RE.sub('', content.rstrip())
+            last_ed = Editor(el, content, repl=True)
         elif mode == 'python':
-            el.text = content.rstrip()
-            last_ed = Editor(el)
+            last_ed = Editor(el, content)
         elif mode == 'exercises':
             last_ed.add_exercises(content, id)
 
@@ -207,7 +220,7 @@ def on_key(event):
     if event.ctrlKey and event.keyCode == 82:
         fragment = window.location.hash.strip('#')
         if fragment:
-            load_lesson(fragment, loader=False)
+            load_lesson(fragment)
             event.preventDefault()
 
 

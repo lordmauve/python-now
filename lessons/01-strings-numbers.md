@@ -181,3 +181,55 @@ def test_14():
     check_nums()
     assert result == 14
 ```
+
+## Converting strings to numbers
+
+If `+` on numbers adds the numbers, and `+` on strings concatenates the strings,
+what happens when we want to add numbers that are represented as strings?
+
+```repl
+>>> "20" + "45"
+```
+
+If we expected the answer `65` then we have to convert the strings to numbers
+before adding them. Python provides functions that do this:
+
+* `int(number_string)` converts a string to an `int` or integer (whole number).
+* `float(number_string)` converts a string to a `float` or floating-point
+  (decimal number).
+
+Let's try these
+
+```repl
+>>> "9" + "1.25"
+```
+
+```exercise
+def test_convert():
+    """Use the `int()` and `float()` functions to add together these two
+    numbers.
+    """
+    assert result == 10.25
+    assert 'float' in source
+
+
+def test_convert_back():
+    """Use the `str(...)` function to convert the result back to a string."""
+    assert result == '10.25'
+    assert 'str' in source and 'float' in source
+```
+
+## Objects
+
+We've seen strings (`str`) and numbers (`int` and `float`). These are just two
+of many different types of **objects** in Python (and in Python, everything is
+an object).
+
+We've also seen functions and methods (which are also objects; everything is an
+object).
+
+We've also used operators to do calculations. (Operators are not objects. So it
+was a bit of an exaggeration to say that everything is an object 😅).
+
+In the <a href="#variables-and-lists">next lesson</a>, we'll look at how to keep
+track of our objects.
