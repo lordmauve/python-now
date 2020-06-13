@@ -58,6 +58,8 @@ class Editor:
         self.outbox <= self.output
         self.components.append(self)
 
+        self.exercises = None
+
     def clear(self, _event=None):
         """Clear the output window."""
         self.output.text = ''
@@ -96,7 +98,7 @@ class Editor:
             'id': self.id,
             'source': source,
             'mode': 'eval' if self.repl else 'exec',
-            'exercises': self.exercises,
+            'exercises': self.exercises or '',
         })
 
     def add_exercises(self, source, id):
