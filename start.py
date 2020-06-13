@@ -113,7 +113,7 @@ class Editor:
 
             img = '<img alt="Unsolved" src="static/svg/unsolved.svg">'
             item = html.LI(**{'class': 'exercise'})
-            item.html = img + mk
+            item.html = img + window.twemoji.parse(mk)
             document[id] <= item
             self.exercise_items.append(item)
 
@@ -180,7 +180,7 @@ There was an error loading the lesson {url}.
 
     container = document['lesson']
     container.class_name = ''
-    container.html = mk
+    container.html = window.twemoji.parse(mk)
 
     last_ed = None
     for id, mode, content in interactions:
