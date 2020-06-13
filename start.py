@@ -77,6 +77,15 @@ class Editor:
             pass  # discard for now
         elif command == 'ready':
             self.outbox.class_name = 'outbox'
+        elif command == 'ex_result':
+            print(params)
+            test_id, err = params
+            item = self.exercise_items[test_id]
+            img = item.select('img')[0]
+            if not err:
+                img.attrs['src'] = 'static/svg/passed.svg'
+            else:
+                img.attrs['src'] = 'static/svg/failed.svg'
             
     def run(self, _event=None):
         """Run the code currently in the editor."""
@@ -86,8 +95,24 @@ class Editor:
         executor.send({
             'id': self.id,
             'source': source,
-            'mode': 'eval' if self.repl else 'exec'
+            'mode': 'eval' if self.repl else 'exec',
+            'exercises': self.exercises,
         })
+
+    def add_exercises(self, source, id):
+        """Attach exercises to this editor component."""
+        self.exercises = source
+        self.exercise_items = []
+        triple_quoted = TRIPLE_QUOTES_RE.findall(source)
+
+        for docstring in triple_quoted:
+            mk, scripts = markdown.mark(docstring.strip())
+
+            img = '<img alt="Unsolved" src="static/svg/unsolved.svg">'
+            item = html.LI(**{'class': 'exercise'})
+            item.html = img + mk
+            document[id] <= item
+            self.exercise_items.append(item)
 
 
 executor = Worker('run_code')
@@ -109,6 +134,7 @@ def load_lesson(name, loader=True):
     ajax.get(url, oncomplete=render_lesson)
 
 
+TRIPLE_QUOTES_RE = re.compile(r'"""(.*?)"""', flags=re.DOTALL)
 FENCE_RE = re.compile(r"^```(\w+)\n(.*?)```", re.DOTALL | re.MULTILINE)
 REPL_RE = re.compile(r'^(>>>|\.\.\.) ', re.MULTILINE)
 
@@ -131,8 +157,13 @@ There was an error loading the lesson {url}.
     def match_code(mo):
         obj_id = f'{url}-{len(interactions)}'
         mode, content = mo.groups()
+        if mode not in ('repl', 'python', 'exercises'):
+            return
         interactions.append((obj_id, mode, content))
-        return f'<textarea id="{obj_id}"></textarea>'
+        if mode in ('repl', 'python'):
+            return f'<textarea id="{obj_id}"></textarea>'
+        else:
+            return f'<ul class="exercises" id="{obj_id}"></ul>'
 
     source = FENCE_RE.sub(
         match_code,
@@ -144,14 +175,17 @@ There was an error loading the lesson {url}.
     container.class_name = ''
     container.html = mk
 
+    last_ed = None
     for id, mode, content in interactions:
         el = document[id]
         if mode == 'repl':
             el.text = REPL_RE.sub('', content.rstrip())
-            Editor(el, repl=True)
-        else:
+            last_ed = Editor(el, repl=True)
+        elif mode == 'python':
             el.text = content.rstrip()
-            Editor(el)
+            last_ed = Editor(el)
+        elif mode == 'exercises':
+            last_ed.add_exercises(content, id)
 
 
 def on_hash_change(event=None):
@@ -172,7 +206,6 @@ def on_key(event):
 
 window.bind('keydown', on_key)
 window.bind('hashchange', on_hash_change)
-
 
 
 if window.location.hash:

@@ -98,4 +98,27 @@ the numbers, it just adds them.
 
 * Can you subtract the numbers instead?
 * Can you multiply the numbers? The multiply operator in Python, like most
-  programming languages is `*` (not `×`).
+  programming languages is `*` (not `×` - you probably don't have an `×` key on
+  your keyboard!).
+
+
+## Division and remainder
+
+Python's division operator is: `/`. `÷` won't work.
+
+However `/` gives the result as a decimal number. Python also has an integer
+division operator `//`, which pairs up with the remainder operator `%`.
+
+```repl
+>>> 10 / 3
+```
+
+```exercises
+def test_floordiv():
+    """Calculate the answer `3` by using the `//` operator."""
+    assert result == 3
+
+def test_mod():
+    """Calculate the answer `1` as the remainder for 10 ÷ 3."""
+    assert result == 1
+```

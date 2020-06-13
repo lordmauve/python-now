@@ -32,3 +32,24 @@ for _ in range(10):
     print(a)
     a, b = b, a + b
 ```
+
+Finally, sometimes there are exercises associated with an editor.
+
+```python
+def f(x):
+    return x
+```
+
+```exercises
+
+def test_double():
+    """Make `f(x)` return the **square** of *x*."""
+    assert f(10) == 100
+    assert f(-1) == 1
+
+def test_square_root():
+    """Make `f(x)` return the **square root** of *x*."""
+    assert f(25) == 5
+    assert f(36) == 6
+    assert abs(f(2) - 2 ** 0.5) < 1e-9
+```
