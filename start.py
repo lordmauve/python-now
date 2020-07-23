@@ -55,7 +55,8 @@ class Editor:
             "extraKeys": {
                 "Ctrl-Enter": self.run,
                 "Esc": self.clear,
-            }
+            },
+            "indentUnit": 4
         }
         if repl:
             options['gutters'] = ['prompt-gutter']
