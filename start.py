@@ -60,6 +60,7 @@ class Editor:
         if repl:
             options['gutters'] = ['prompt-gutter']
             options['extraKeys']['Enter'] = self.on_repl_enter
+            options['indentUnit'] = 4
         self.codemirror = window.CodeMirror.fromTextArea(textarea, options)
         if repl:
             for lineno, prompt in enumerate(prompts):
