@@ -12,6 +12,7 @@ Example screenshot:
 ## Current status
 
 This project is fully functional, but lacks content.
+Recently added lessons cover `print()`, `range()`, `for` loops, `if`/`elif`/`else` statements, `while` loops, functions, and basic classes.
 
 It can
 
